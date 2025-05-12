@@ -5,6 +5,9 @@ function App()
 {
   const [alunni, setAlunni]=useState([]);
   const [loading, setLoading]=useState(false);
+  const [inserimento, setInserimento]=useState(false);
+  const [nome, setNome] = useState ('');
+  const [cognome, setCognome] = useState ('');
   function carica() 
   {
     setLoading(true);
@@ -14,6 +17,20 @@ function App()
       setAlunni(data)
       setLoading(false);
     })
+  }
+  function salva()
+  {
+    setInserimento(false);
+    setLoading(true);
+    fetch('http://localhost:8080/alunni', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({nome: nome, cognome: cognome})
+    })
+    .then(response => response.json())
+    .then(data => {
+      setAlunni(data)
+      setLoading(false);
+    })
+
+    console.log("nome" + "" + "cognome")
   }
 
   return(
@@ -32,13 +49,32 @@ function App()
     {loading &&
       <p>caricamento...</p>
     }
-    {alunni.length===0 &&
-      <button onClick={carica}>
+    {/* {alunni.length===0 &&
+      <button onClick={() => setInserimento(true)}>
         carica alunni
       </button>
+    } */}
+    <button onClick={carica}>
+      inserisci alunni
+    </button>
+    {inserimento &&
+      <div> 
+        Nome: <input onChange={(e)=> setNome(e.target.value)} type="text" id="nome"/><br/><br/>
+        Cognome: <input onChange={(e)=> setCognome(e.target.value)} type="text" id="cognome"/><br/><br/>
+        <button onClick={carica}>salva</button>
+        <button onClick={() => setInserimento(false)}>annulla</button>
+      </div>
+    
     }
+    {loading && <p>caricamento</p>}
+      {alunni.length === 0 && !loading && (
+        <button className="Bottone" onClick={carica}>
+          Carica Alunni
+        </button>
+      )}
+
     </>
-  );
+  )
 }
 
 export default App;
