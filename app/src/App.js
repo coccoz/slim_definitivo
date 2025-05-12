@@ -1,65 +1,44 @@
-import logo from './logo.svg';
 import './App.css';
-import {useState} from "react;"
+import {useState} from "react";
 
 function App()
 {
   const [alunni, setAlunni]=useState([]);
-  const a = [
-    {
-      "id": "1",
-      "nome": "matteo",
-      "cognome": "chardo",
-  
-    },
-    {
-      "id": "2",
-      "nome": "tommi",
-      "cognome": "pizza",
-    }
-  ];
-
+  const [loading, setLoading]=useState(false);
   function carica() 
   {
-    setAlunni(a);
+    setLoading(true);
+    fetch('http://localhost:8080/alunni')
+    .then(response => response.json())
+    .then(data => {
+      setAlunni(data)
+      setLoading(false);
+    })
   }
-  
-  {alunni.lenght===0 &&
-    <button onClick="carica">
-      carica alunni
-    </button>
-  }
-
-  
 
   return(
+    <>
     <table border="1">
+      {
+        alunni.map(alunno =>
+          <tr>
+            <td>{alunno.id}</td>
+            <td>{alunno.nome}</td>
+            <td>{alunno.cognome}</td>
+          </tr>
+        )
+      }
     </table>
-    
-  )
+    {loading &&
+      <p>caricamento...</p>
+    }
+    {alunni.length===0 &&
+      <button onClick={carica}>
+        carica alunni
+      </button>
+    }
+    </>
+  );
 }
 
-
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
+export default App;
