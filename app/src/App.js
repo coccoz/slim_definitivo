@@ -34,10 +34,14 @@ function App()
     console.log("nome" + "" + "cognome")
   }
   function elimina(id) {
+    const conferma = window.confirm("Sei sicuro di voler eliminare questo alunno?");
+    if (!conferma) {
+      return; 
+    }
     setLoading(true);
     fetch(`http://localhost:8080/alunni/${id}`, { method: 'DELETE' })
       .then(() => {
-        carica(); // Ricarica la lista degli alunni dopo l'eliminazione
+        carica(); 
       });
   }
   
@@ -45,9 +49,16 @@ function App()
   return(
     <>
     <table border="1">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Cognome</th>
+        </tr>
+      </thead>
       {
         alunni.map(alunno =>
-          <tr>
+          <tr key={alunno.id}>
             <td>{alunno.id}</td>
             <td>{alunno.nome}</td>
             <td>{alunno.cognome}</td>
@@ -56,6 +67,7 @@ function App()
         )
       }
     </table>
+
     {loading &&
       <p>caricamento...</p>
     }
