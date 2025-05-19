@@ -26,12 +26,21 @@ function App()
     })
     .then(response => response.json())
     .then(data => {
-      setAlunni(data)
-      setLoading(false);
+      // setAlunni(data)
+      // setLoading(false);
+      carica();
     })
 
     console.log("nome" + "" + "cognome")
   }
+  function elimina(id) {
+    setLoading(true);
+    fetch(`http://localhost:8080/alunni/${id}`, { method: 'DELETE' })
+      .then(() => {
+        carica(); // Ricarica la lista degli alunni dopo l'eliminazione
+      });
+  }
+  
 
   return(
     <>
@@ -42,6 +51,7 @@ function App()
             <td>{alunno.id}</td>
             <td>{alunno.nome}</td>
             <td>{alunno.cognome}</td>
+            <td><button onClick={() => elimina(alunno.id)}>delete</button></td>
           </tr>
         )
       }
@@ -54,18 +64,21 @@ function App()
         carica alunni
       </button>
     } */}
-    <button onClick={carica}>
+    {/* <button onClick={carica}> */}
+    <button className="Bottone" onClick={() => setInserimento(true)}>
       inserisci alunni
     </button>
-    {inserimento &&
+    {inserimento && (
       <div> 
         Nome: <input onChange={(e)=> setNome(e.target.value)} type="text" id="nome"/><br/><br/>
         Cognome: <input onChange={(e)=> setCognome(e.target.value)} type="text" id="cognome"/><br/><br/>
-        <button onClick={carica}>salva</button>
+        <button onClick={salva}>salva</button>
         <button onClick={() => setInserimento(false)}>annulla</button>
       </div>
-    
-    }
+      
+      
+      )}
+      
     {loading && <p>caricamento</p>}
       {alunni.length === 0 && !loading && (
         <button className="Bottone" onClick={carica}>
